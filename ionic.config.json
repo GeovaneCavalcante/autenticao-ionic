@@ -1,0 +1,14 @@
+{
+  "name": "app",
+  "app_id": "",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  },
+  "proxies": [
+    {
+      "path": "/Backend/",
+      "proxyUrl": "http://sistema.seges.com.br:8080"
+    }
+  ]
+}
