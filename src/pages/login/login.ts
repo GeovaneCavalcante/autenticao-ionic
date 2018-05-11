@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, MenuController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, MenuController, ToastController, LoadingController } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { GenericoProvider } from '../../providers/generico/generico';
 import { HomePage } from '../home/home';
@@ -15,6 +15,8 @@ export class LoginPage {
   loginForm: FormGroup
   email: any
   password: any
+  loading: any;
+
 
   constructor(
     public navCtrl: NavController, 
@@ -22,7 +24,8 @@ export class LoginPage {
     public genericoProvider: GenericoProvider,
     public formBuilder: FormBuilder,
     public menuCtrl: MenuController,
-    private toastCtrl: ToastController) 
+    private toastCtrl: ToastController,
+    public loadingCtrl: LoadingController) 
   {
     this.menuCtrl.enable(false);
     let emailRegex = /^[a-z0-9!#$%&'+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-][a-z0-9])?(\.[a-z0-9]([a-z0-9-][a-z0-9])?)$/i;
@@ -38,6 +41,8 @@ export class LoginPage {
   }
 
   singIn(){
+    
+    this.presentLoading("Carregando")
 
     let data = {
       email: this.email,
@@ -51,8 +56,16 @@ export class LoginPage {
       }else if(data['error']){
         this.presentToast(data['error'])
       }
+      this.loading.dismiss();
     })
 
+  }
+
+  presentLoading(msg) {
+    this.loading = this.loadingCtrl.create({
+      content: msg
+    });
+    this.loading.present();
   }
 
   presentToast(data) {

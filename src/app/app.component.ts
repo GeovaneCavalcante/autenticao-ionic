@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { LoginPage } from './../pages/login/login';
+import * as JWT from 'jwt-decode';
 
 @Component({
   templateUrl: 'app.html'
@@ -14,14 +15,37 @@ import { LoginPage } from './../pages/login/login';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = LoginPage;
+  rootPage: any = HomePage;
 
   constructor(
     public platform: Platform, 
     public statusBar: StatusBar, 
     public splashScreen: SplashScreen,
-    public storage: Storage) {
+    public storage: Storage) 
+  {
+    this.verificacao()
     this.initializeApp();
+  }
+
+  verificacao(){
+    
+    this.storage.get('token').then((val)=> {
+      
+      if(val){
+        let token = JWT(val);
+        if(token['exp'] > (Date.now() / 1000)){
+          this.rootPage = HomePage
+        }else{
+          this.storage.remove('token').then(val => val)
+          this.storage.remove('user').then(val => val)
+          this.rootPage = LoginPage
+        }
+      }else{
+        this.rootPage = LoginPage
+      }
+       
+    });
+
   }
 
   initializeApp() {
@@ -32,8 +56,8 @@ export class MyApp {
   }
 
   logout(){
-    this.storage.remove('token')
-    this.storage.remove('user')
+    this.storage.remove('token').then(val => val)
+    this.storage.remove('user').then(val => val)
     this.nav.setRoot(LoginPage)
   }
 }

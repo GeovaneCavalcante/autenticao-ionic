@@ -16,7 +16,6 @@ export class HomePage {
   ) 
   {
     this.menuCtrl.enable(true); 
-    this.storage.get('user').then((data) => console.log(data))
   }
 
 }
